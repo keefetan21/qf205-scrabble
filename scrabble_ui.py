@@ -302,6 +302,7 @@ class BoardItem(QGraphicsItem):
                 return (i % self.width, int(i / self.width))
 
     def validNewWord(self):
+        pass
         # ''' Checks if there is one valid new word on the board '''
         # letters_ = [l for l in self.letters if l and not l.is_safe]
         # letters = [self.getLetterPosition(l) for l in letters_]
