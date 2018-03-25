@@ -302,45 +302,52 @@ class BoardItem(QGraphicsItem):
                 return (i % self.width, int(i / self.width))
 
     def validNewWord(self):
-        pass
-        # ''' Checks if there is one valid new word on the board '''
-        # letters_ = [l for l in self.letters if l and not l.is_safe]
-        # letters = [self.getLetterPosition(l) for l in letters_]
-        # old_letters = [l for l in self.letters if l and l.is_safe]
+        # pass
+        ''' Checks if there is one valid new word on the board '''
+        letters_ = [l for l in self.letters if l and not l.is_safe]
+        letters = [self.getLetterPosition(l) for l in letters_]
+        old_letters = [l for l in self.letters if l and l.is_safe]
+        if(not all (elem is None for elem in letters)):
+            if(self.letters[112] == None):
+                raise Exception("Please start at the center")
+                
 
-        # if len(letters) == 0 or \
-        #    not (len(set(l[0] for l in letters)) == 1 or
-        #         len(set(l[1] for l in letters)) == 1):
-        #     return False
+        if(self.letters[112] == None):
+            return False
 
-        # letter = letters[0]
-        # direction = 'right'
+        if len(letters) == 0 or \
+           not (len(set(l[0] for l in letters)) == 1 or
+                len(set(l[1] for l in letters)) == 1):
+            return False
 
-        # if len(letters) == 1:
-        #     l = letters[0]
-        #     if (l[1] - 1 >= 0 and self.getLetter(l[0], l[1] - 1)) or \
-        #        (l[1] + 1 < self.height and self.getLetter(l[0], l[1] + 1)):
-        #         direction = 'down'
-        # elif letters[0][0] == letters[-1][0]:
-        #     direction = 'down'
+        letter = letters[0]
+        direction = 'right'
 
-        # if direction == 'right':
-        #     row = [self.getLetter(x, letter[1]) for x in range(self.width)]
-        #     pivot = letter[0]
-        # else:
-        #     row = [self.getLetter(letter[0], y) for y in range(self.height)]
-        #     pivot = letter[1]
+        if len(letters) == 1:
+            l = letters[0]
+            if (l[1] - 1 >= 0 and self.getLetter(l[0], l[1] - 1)) or \
+               (l[1] + 1 < self.height and self.getLetter(l[0], l[1] + 1)):
+                direction = 'down'
+        elif letters[0][0] == letters[-1][0]:
+            direction = 'down'
 
-        # word_right = list(takewhile(lambda x: x, row[pivot:]))
-        # word_left = row[:pivot]
-        # word_left.reverse()
-        # word_left = list(takewhile(lambda x: x, word_left))
-        # word_left.reverse()
-        # word = word_left + word_right
+        if direction == 'right':
+            row = [self.getLetter(x, letter[1]) for x in range(self.width)]
+            pivot = letter[0]
+        else:
+            row = [self.getLetter(letter[0], y) for y in range(self.height)]
+            pivot = letter[1]
 
-        # return all(l is not None for l in word) and \
-        #        (not old_letters or any(l.is_safe for l in word)) and \
-        #        all(l in word for l in letters_)
+        word_right = list(takewhile(lambda x: x, row[pivot:]))
+        word_left = row[:pivot]
+        word_left.reverse()
+        word_left = list(takewhile(lambda x: x, word_left))
+        word_left.reverse()
+        word = word_left + word_right
+
+        return all(l is not None for l in word) and \
+               (not old_letters or any(l.is_safe for l in word)) and \
+               all(l in word for l in letters_)
 
     def getNewWord(self):
         ''' Gets the new word '''
