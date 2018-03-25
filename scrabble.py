@@ -12,6 +12,8 @@ def run():
 
     game.add_player(Human("Player1", game))
     game.add_player(Human("Player2", game))
+    game.add_player(Human("Player3", game))
+    game.add_player(Human("Player4", game))
 
     app = QApplication(argv)
     win = Window(game)
