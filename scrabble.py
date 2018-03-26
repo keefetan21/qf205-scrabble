@@ -5,6 +5,28 @@ from PyQt5.QtWidgets import QApplication
 from common import Game, DEFAULT_LETTERSET
 from scrabble_ui import Window, Human
 
+import pandas as pd
+import numpy as np
+
+'''
+Logic behind scoring
+1. Check if all all adjacent words are valid
+2. Confim with users that he/she wants to put the word in this location
+3. Calculate double/triple letters
+4. Calculate double/triple scores
+
+'''
+
+#load board multiplier from CSV file
+df = pd.read_csv("data/board_multiplier.csv", header=None)
+
+print(df)
+# print(board)
+
+
+
+
+
 
 def run():
 
