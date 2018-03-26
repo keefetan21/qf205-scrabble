@@ -307,9 +307,9 @@ class BoardItem(QGraphicsItem):
         letters_ = [l for l in self.letters if l and not l.is_safe]
         letters = [self.getLetterPosition(l) for l in letters_]
         old_letters = [l for l in self.letters if l and l.is_safe]
-        if(not all (elem is None for elem in letters)):
-            if(self.letters[112] == None):
-                raise Exception("Please start at the center")
+        # if(not all (elem is None for elem in letters)):
+        #     if(self.letters[112] == None):
+        #         raise Exception("Please start at the center")
                 
 
         if(self.letters[112] == None):
