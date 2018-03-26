@@ -8,10 +8,11 @@ from PyQt5.QtCore import Qt, QRect, QRectF, QSizeF, QPointF, pyqtSignal, QProper
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGraphicsItem, QGraphicsScene, QGraphicsView, QGroupBox, QLabel, \
                         QPushButton,QGraphicsWidget, QMessageBox, QInputDialog
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QFont
-
+from os.path import abspath, join, dirname
 from common import Player
-
-
+import pandas as pd
+PROJECT_PATH = dirname(abspath(__file__))
+DEFAULT_WORDS_PATH = join(PROJECT_PATH, 'data', 'words.csv')
 class LetterItem(QGraphicsWidget):
     '''
     A dragable objects which represents a game tile and is used as
@@ -207,6 +208,11 @@ class BoardItem(QGraphicsItem):
     def __init__(self, width, height):
         ''' Construct a new BoardItem '''
         super().__init__()
+
+        #load csv here 
+        
+        self.words = pd.read_csv(
+            DEFAULT_WORDS_PATH, sep=',', header=None).values
         self.width = width
         self.height = height
         self.rect = QRectF(0, 0, width * self.CELL_SIZE + self.LEGEND_SIZE,
@@ -301,6 +307,9 @@ class BoardItem(QGraphicsItem):
             if letter == l:
                 return (i % self.width, int(i / self.width))
 
+    def validateWord(self):
+        return self.currentWord in self.words
+
     def validNewWord(self):
         # pass
         ''' Checks if there is one valid new word on the board '''
@@ -344,7 +353,12 @@ class BoardItem(QGraphicsItem):
         word_left = list(takewhile(lambda x: x, word_left))
         word_left.reverse()
         word = word_left + word_right
-
+        
+        wordStr = ''
+        for letterItem in word:
+            wordStr += letterItem.char.lower()
+        self.currentWord = wordStr
+       
         return all(l is not None for l in word) and \
                (not old_letters or any(l.is_safe for l in word)) and \
                all(l in word for l in letters_)
@@ -672,9 +686,20 @@ class Window(QWidget):
         player.play()
 
     def continueClicked(self):
-        if type(self.game.current_player) is Human:
-            self.game.current_player.continue_cb()
+        if self.board.validateWord():
+            if type(self.game.current_player) is Human:
+                self.board.currentWord = ''
+                self.game.current_player.continue_cb()
+        else: 
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Oops! Invalid word")
+            msg.setInformativeText("Please try again")
+            msg.setWindowTitle("Invalid word")
+            msg.exec_()
+            pass
 
+      
     def passClicked(self):
         if type(self.game.current_player) is Human:
             self.game.current_player.pass_cb()
