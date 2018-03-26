@@ -20,7 +20,7 @@ Logic behind scoring
 #load board multiplier from CSV file
 df = pd.read_csv("data/board_multiplier.csv", header=None)
 
-print(df)
+# print(df)
 # print(board)
 
 
