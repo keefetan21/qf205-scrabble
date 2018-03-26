@@ -307,6 +307,11 @@ class BoardItem(QGraphicsItem):
             if letter == l:
                 return (i % self.width, int(i / self.width))
 
+    def validateWord(self):
+        print('Validating word after continue is clicked')
+        print('current word is ' + self.currentWord)
+        return self.currentWord in self.words
+
     def validNewWord(self):
         # pass
         ''' Checks if there is one valid new word on the board '''
@@ -353,10 +358,7 @@ class BoardItem(QGraphicsItem):
         wordStr = ''
         for letterItem in word:
             wordStr += letterItem.char.lower()
-
-        print(wordStr.lower())
-        print('is it valid?')
-        print(wordStr.lower() in self.words)
+        self.currentWord = wordStr
        
         return all(l is not None for l in word) and \
                (not old_letters or any(l.is_safe for l in word)) and \
@@ -685,9 +687,17 @@ class Window(QWidget):
         player.play()
 
     def continueClicked(self):
-        if type(self.game.current_player) is Human:
-            self.game.current_player.continue_cb()
+        print('continue clicked')
+        if self.board.validateWord():
+            print('word is valid')
+            if type(self.game.current_player) is Human:
+                self.board.currentWord = ''
+                self.game.current_player.continue_cb()
+        else: 
+            print('word is invalid')
+            pass
 
+      
     def passClicked(self):
         if type(self.game.current_player) is Human:
             self.game.current_player.pass_cb()
