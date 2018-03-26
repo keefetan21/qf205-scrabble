@@ -321,8 +321,8 @@ class BoardItem(QGraphicsItem):
         #         raise Exception("Please start at the center")
                 
 
-        if(self.letters[112] == None):
-            return False
+        # if(self.letters[112] == None):
+        #     return False
 
         if len(letters) == 0 or \
            not (len(set(l[0] for l in letters)) == 1 or
@@ -536,7 +536,12 @@ class Human(Player):
 
     def continue_cb(self):
         ''' Place word button clicked '''
+
         word = self.game.ui.board.getNewWord()
+
+        if(self.game.ui.board.letters[112] == None):
+            raise Exception("Please start at the center")
+
         self.place_word(*word)
         self.game.ui.update()
 
