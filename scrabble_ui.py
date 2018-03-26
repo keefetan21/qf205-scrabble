@@ -553,7 +553,7 @@ class Window(QWidget):
         self.setStyleSheet('QGroupBox { border:0; font:bold;' +
                            'padding:20px 10px; min-width:220px; }')
 
-        self.h = BoardItem(game.width, game.height)
+        self.board = BoardItem(game.width, game.height)
         self.rack = RackItem(game.rack_size, game.width, game.height)
         self.scene = QGraphicsScene()
         self.scene.setBackgroundBrush(QBrush(QColor('#f9ece0')))
