@@ -308,8 +308,6 @@ class BoardItem(QGraphicsItem):
                 return (i % self.width, int(i / self.width))
 
     def validateWord(self):
-        print('Validating word after continue is clicked')
-        print('current word is ' + self.currentWord)
         return self.currentWord in self.words
 
     def validNewWord(self):
@@ -687,14 +685,17 @@ class Window(QWidget):
         player.play()
 
     def continueClicked(self):
-        print('continue clicked')
         if self.board.validateWord():
-            print('word is valid')
             if type(self.game.current_player) is Human:
                 self.board.currentWord = ''
                 self.game.current_player.continue_cb()
         else: 
-            print('word is invalid')
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Oops! Invalid word")
+            msg.setInformativeText("Please try again")
+            msg.setWindowTitle("Invalid word")
+            msg.exec_()
             pass
 
       
