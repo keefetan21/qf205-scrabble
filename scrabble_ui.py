@@ -8,10 +8,11 @@ from PyQt5.QtCore import Qt, QRect, QRectF, QSizeF, QPointF, pyqtSignal, QProper
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGraphicsItem, QGraphicsScene, QGraphicsView, QGroupBox, QLabel, \
                         QPushButton,QGraphicsWidget, QMessageBox, QInputDialog
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QFont
-
+from os.path import abspath, join, dirname
 from common import Player
-
-
+import pandas as pd
+PROJECT_PATH = dirname(abspath(__file__))
+DEFAULT_WORDS_PATH = join(PROJECT_PATH, 'data', 'words.csv')
 class LetterItem(QGraphicsWidget):
     '''
     A dragable objects which represents a game tile and is used as
@@ -207,6 +208,11 @@ class BoardItem(QGraphicsItem):
     def __init__(self, width, height):
         ''' Construct a new BoardItem '''
         super().__init__()
+
+        #load csv here 
+        
+        self.words = pd.read_csv(
+            DEFAULT_WORDS_PATH, sep=',', header=None).values
         self.width = width
         self.height = height
         self.rect = QRectF(0, 0, width * self.CELL_SIZE + self.LEGEND_SIZE,
@@ -310,8 +316,7 @@ class BoardItem(QGraphicsItem):
         if(not all (elem is None for elem in letters)):
             if(self.letters[112] == None):
                 raise Exception("Please start at the center")
-                
-
+        
         if(self.letters[112] == None):
             return False
 
@@ -344,7 +349,15 @@ class BoardItem(QGraphicsItem):
         word_left = list(takewhile(lambda x: x, word_left))
         word_left.reverse()
         word = word_left + word_right
+        
+        wordStr = ''
+        for letterItem in word:
+            wordStr += letterItem.char.lower()
 
+        print(wordStr.lower())
+        print('is it valid?')
+        print(wordStr.lower() in self.words)
+       
         return all(l is not None for l in word) and \
                (not old_letters or any(l.is_safe for l in word)) and \
                all(l in word for l in letters_)
