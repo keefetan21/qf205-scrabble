@@ -4,6 +4,8 @@ from itertools import chain
 from os.path import abspath, join, dirname
 from random import seed, randrange
 
+import numpy as np
+
 
 PROJECT_PATH = dirname(abspath(__file__))
 DEFAULT_LETTERSET = join(PROJECT_PATH, 'data', 'letters.csv')
@@ -218,7 +220,7 @@ class Game:
     def add_player(self, player):
         '''Add a new player to the list of players'''
         self.players.append(player)
-
+        np.random.shuffle(self.players)
 
 
     def next_player(self):
