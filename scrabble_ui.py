@@ -21,13 +21,13 @@ class LetterItem(QGraphicsWidget):
     A dragable objects which represents a game tile and is used as
     an intuitive way of interaction
     '''
-    LETTER_SIZE = 50
-    LETTER_FONT = QFont('Sans', 50/2, QFont.DemiBold)
+    LETTER_SIZE = 60
+    LETTER_FONT = QFont('Sans', 60/2, QFont.DemiBold)
     LETTER_PEN = QPen(QColor('#444444'), 1, Qt.SolidLine)
-    SCORE_FONT = QFont('Sans', 50/6)
+    SCORE_FONT = QFont('Sans', 60/4)
     SCORE_PEN = QPen(QColor('#666666'), 1, Qt.SolidLine)
     LETTER_CENTER = QPointF(25, 25)
-    BOUNDING_RECT = QRectF(0, 0, 50, 50)
+    BOUNDING_RECT = QRectF(0, 0, 70, 70)
 
     def __init__(self, char, score, color, safe=False):
         ''' Construct a new visual representation of a tile '''
@@ -199,8 +199,8 @@ class BoardItem(QGraphicsItem):
     A graphical representation of a scrabble board. It also keeps track of
     all LetterItems 'placed' on it.
     '''
-    CELL_SIZE = LetterItem.LETTER_SIZE + 10
-    LEGEND_SIZE = int((LetterItem.LETTER_SIZE + 10) / 2)
+    CELL_SIZE = LetterItem.LETTER_SIZE + 1.5
+    LEGEND_SIZE = int((LetterItem.LETTER_SIZE + 5) / 2)
     COLOR_EVEN = QColor(245, 245, 245)
     COLOR_ODD = QColor(240, 240, 240)
     COLOR_HIGHLIGHT = QColor('#fff5a6')
@@ -208,7 +208,7 @@ class BoardItem(QGraphicsItem):
     FONT_LEGEND = QFont('Sans', int((LetterItem.LETTER_SIZE + 10) / 5))
     PEN_LEGEND = QPen(QColor('#fff'), 1, Qt.SolidLine)
     df = pd.read_csv("data/board_multiplier.csv", header=None)
-    
+ 
     def __init__(self, width, height):
         ''' Construct a new BoardItem '''
         super().__init__()
@@ -540,7 +540,8 @@ class Human(Player):
     def pass_cb(self):
         ''' Pass button clicked '''
         self.skip()
-
+        
+        
     def exchange_cb(self):
         ''' Exchange button clicked '''
         self.exchange_letters(

@@ -17,17 +17,6 @@ Logic behind scoring
 
 '''
 
-#load board multiplier from CSV file
-df = pd.read_csv("data/board_multiplier.csv", header=None)
-
-# print(df)
-# print(board)
-
-
-
-
-
-
 def run():
 
     game = Game(15, 15, 7, DEFAULT_LETTERSET)
