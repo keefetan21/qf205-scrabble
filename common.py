@@ -5,6 +5,7 @@ from os.path import abspath, join, dirname
 from random import seed, randrange
 
 import numpy as np
+import pandas as pd
 
 
 PROJECT_PATH = dirname(abspath(__file__))
@@ -103,6 +104,7 @@ class Board:
         self.width = width
         self.height = height
         self.board = [None for _ in range(0, width * height)]
+        self.board_score = pd.read_csv("data/board_multiplier.csv", header=None)
 
     def __iter__(self):
         for i,c in enumerate(self.board):
@@ -180,8 +182,43 @@ class Board:
         for x, y, c in new_letters:
             self.board[y * self.width + x] = None
 
-        return sum(sum(letter_set.get_score(c) for c in w[3]) for w
-                   in really_new_words)
+        formula = self.score_with_bonus(letter_set, really_new_words)
+        # print(formula)
+        # print(eval(formula))
+        # return sum(sum(letter_set.get_score(c) for c in w[3]) for w
+        #            in really_new_words)
+        return eval(formula)
+
+    def score_with_bonus(self, letter_set, really_new_words):
+        board_bonus = {"m" : "*2", "w2" : "*2", "w3" : "*3", "l2" : "2", "l3" : "3"}
+
+        start = really_new_words[0][0]
+        end = really_new_words[0][1]
+        formula = "("
+        word_multiplier = ""
+        word = really_new_words[0][3]
+
+        for i in range(len(word)):
+            if really_new_words[0][2] == "down":
+                bonus_tile = self.board_score.loc[start, end+i]
+            else:
+                bonus_tile = self.board_score.loc[start + i, end]
+
+            multiplier = str(board_bonus.get(bonus_tile, "1"))
+
+            if "w" in bonus_tile or "m" in bonus_tile:
+                multiplier = "1"
+                word_multiplier += board_bonus.get(bonus_tile)
+
+            formula += str(letter_set.get_score(word[i])) + "*" + multiplier
+
+            if i < len(word)-1:
+                formula += ("+")
+            else:
+                formula += ")" + word_multiplier
+
+        return formula
+
 
 
 class Game:
@@ -206,6 +243,7 @@ class Game:
         self.lap = 0
         self.turn = 0
         self.empty = True
+
 
     def state(self):
         ''' The state of the game '''
