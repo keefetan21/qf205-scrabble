@@ -102,6 +102,8 @@ class LetterTileUI(QGraphicsWidget):
         Fired when the LetterItem is moved, propagates a custom letter event
         to underlying RackItem and BoardItem objects
         '''
+
+        # Import statements placed here to prevent circular dependency of imports
         from .racktile_ui import RackTileUI
         from .board_ui import BoardUI
 
@@ -121,6 +123,8 @@ class LetterTileUI(QGraphicsWidget):
         Fired when the LetterItem is released, propagates a custom letter event
         to underlying RackItem and BoardItem objects
         '''
+
+        # Import statements placed here to prevent circular dependency of imports
         from .racktile_ui import RackTileUI
         from .board_ui import BoardUI
 

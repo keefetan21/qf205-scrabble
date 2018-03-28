@@ -160,7 +160,16 @@ class WindowUI(QWidget):
         if self.board.validateWord():
             if type(self.game.current_player) is PlayerUI:
                 self.board.currentWord = ''
-                self.game.current_player.continue_cb()
+                try:
+                    self.game.current_player.continue_cb()
+                except:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setText("Oops! First word must be placed on the star spin in the centre of the board.")
+                    msg.setInformativeText("Please try again")
+                    msg.setWindowTitle("Foul play")
+                    msg.exec_()
+                    pass
         else:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)

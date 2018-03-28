@@ -12,7 +12,7 @@ class Board:
         self.width = width
         self.height = height
         self.board = [None for _ in range(0, width * height)]
-        self.board_score = pd.read_csv("data/board_multiplier.csv", header=None)
+        self.board_score = pd.read_csv("../data/board_multiplier.csv", header=None)
 
     def __iter__(self):
         for i, c in enumerate(self.board):

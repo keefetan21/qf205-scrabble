@@ -26,7 +26,7 @@ class PlayerUI(Player):
         word = self.game.ui.board.getNewWord()
 
         if (self.game.ui.board.letters[112] == None):
-            raise Exception("Please start at the center")
+            raise Exception()
 
         self.place_word(*word)
         self.game.ui.update()

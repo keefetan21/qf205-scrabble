@@ -24,7 +24,7 @@ class BoardUI(QGraphicsItem):
     PEN_GRID = QPen(QColor(204, 204, 204), 1, Qt.SolidLine)
     FONT_LEGEND = QFont('Sans', int((LetterTileUI.LETTER_SIZE + 10) / 5))
     PEN_LEGEND = QPen(QColor('#fff'), 1, Qt.SolidLine)
-    df = pd.read_csv("data/board_multiplier.csv", header=None)
+    df = pd.read_csv("../data/board_multiplier.csv", header=None)
 
     def __init__(self, width, height):
         ''' Construct a new BoardItem '''
@@ -147,12 +147,6 @@ class BoardUI(QGraphicsItem):
         letters_ = [l for l in self.letters if l and not l.is_safe]
         letters = [self.getLetterPosition(l) for l in letters_]
         old_letters = [l for l in self.letters if l and l.is_safe]
-        # if(not all (elem is None for elem in letters)):
-        #     if(self.letters[112] == None):
-        #         raise Exception("Please start at the center")
-
-        # if(self.letters[112] == None):
-        #     return False
 
         if len(letters) == 0 or \
                 not (len(set(l[0] for l in letters)) == 1 or
