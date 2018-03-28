@@ -161,6 +161,14 @@ class Board:
                 yield (word[0].x, word[0].y, 'right' if word[0].x !=
                        word[1].x else 'down', ''.join(l.char for l in word))
 
+    '''
+    Logic behind scoring
+    1. Check if all all adjacent words are valid
+    2. Confim with users that he/she wants to put the word in this location
+    3. Calculate double/triple letters
+    4. Calculate double/triple scores
+
+    '''
     def get_word_score(self, letter_set, x, y, direction, word):
         letters = [(x if direction == 'down' else x + i, y if direction ==
                     'right' else y + i, word[i]) for i in range(len(word))]

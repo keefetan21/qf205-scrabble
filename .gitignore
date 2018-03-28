@@ -2,4 +2,4 @@ __pycache__/*
 .idea/*
 .vscode
 .DS_Store
-
+core/__pycache__/*

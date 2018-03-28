@@ -1,25 +1,11 @@
 from sys import argv
-
 from PyQt5.QtWidgets import QApplication
-
-from common import Game, DEFAULT_LETTERSET
+from core.game import Game
 from scrabble_ui import Window, Human
-
-import pandas as pd
-import numpy as np
-
-'''
-Logic behind scoring
-1. Check if all all adjacent words are valid
-2. Confim with users that he/she wants to put the word in this location
-3. Calculate double/triple letters
-4. Calculate double/triple scores
-
-'''
 
 def run():
 
-    game = Game(15, 15, 7, DEFAULT_LETTERSET)
+    game = Game(15, 15, 7)
 
     game.add_player(Human("Player1", game))
     game.add_player(Human("Player2", game))
@@ -29,7 +15,6 @@ def run():
     app = QApplication(argv)
     win = Window(game)
     app.exec_()
-    # app.exec_()
 
 if __name__ == '__main__':
     run()
