@@ -10,6 +10,7 @@ import pandas as pd
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEFAULT_WORDS_PATH = os.path.join(BASE_DIR, 'data', 'words.csv')
+BOARD_MULTIPLIER_PATH = os.path.join(BASE_DIR, 'data', 'board_multiplier.csv')
 
 class BoardUI(QGraphicsItem):
     '''
@@ -24,7 +25,7 @@ class BoardUI(QGraphicsItem):
     PEN_GRID = QPen(QColor(204, 204, 204), 1, Qt.SolidLine)
     FONT_LEGEND = QFont('Sans', int((LetterTileUI.LETTER_SIZE + 10) / 5))
     PEN_LEGEND = QPen(QColor('#fff'), 1, Qt.SolidLine)
-    df = pd.read_csv("../data/board_multiplier.csv", header=None)
+    df = pd.read_csv(BOARD_MULTIPLIER_PATH, header=None)
 
     def __init__(self, width, height):
         ''' Construct a new BoardItem '''

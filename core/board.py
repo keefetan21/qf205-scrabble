@@ -1,6 +1,10 @@
 from .letter import Letter
 from itertools import chain
 import pandas as pd
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BOARD_MULTIPLIER_PATH = os.path.join(BASE_DIR, 'data', 'board_multiplier.csv')
 
 class Board:
     '''
@@ -12,7 +16,7 @@ class Board:
         self.width = width
         self.height = height
         self.board = [None for _ in range(0, width * height)]
-        self.board_score = pd.read_csv("../data/board_multiplier.csv", header=None)
+        self.board_score = pd.read_csv(BOARD_MULTIPLIER_PATH, header=None)
 
     def __iter__(self):
         for i, c in enumerate(self.board):
