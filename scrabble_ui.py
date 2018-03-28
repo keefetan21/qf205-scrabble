@@ -316,13 +316,6 @@ class BoardItem(QGraphicsItem):
         letters_ = [l for l in self.letters if l and not l.is_safe]
         letters = [self.getLetterPosition(l) for l in letters_]
         old_letters = [l for l in self.letters if l and l.is_safe]
-        # if(not all (elem is None for elem in letters)):
-        #     if(self.letters[112] == None):
-        #         raise Exception("Please start at the center")
-                
-
-        # if(self.letters[112] == None):
-        #     return False
 
         if len(letters) == 0 or \
            not (len(set(l[0] for l in letters)) == 1 or
@@ -540,7 +533,7 @@ class Human(Player):
         word = self.game.ui.board.getNewWord()
 
         if(self.game.ui.board.letters[112] == None):
-            raise Exception("Please start at the center")
+            raise Exception()
 
         self.place_word(*word)
         self.game.ui.update()
@@ -694,7 +687,16 @@ class Window(QWidget):
         if self.board.validateWord():
             if type(self.game.current_player) is Human:
                 self.board.currentWord = ''
-                self.game.current_player.continue_cb()
+                try:
+                    self.game.current_player.continue_cb()
+                except:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setText("Oops! First word must be placed on the star spin in the centre of the board.")
+                    msg.setInformativeText("Please try again")
+                    msg.setWindowTitle("Foul play")
+                    msg.exec_()
+                    pass
         else: 
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
