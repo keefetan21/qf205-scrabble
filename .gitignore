@@ -3,3 +3,4 @@ __pycache__/*
 .vscode
 .DS_Store
 core/__pycache__/*
+ui/__pycache__/*
