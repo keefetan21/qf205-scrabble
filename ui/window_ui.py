@@ -9,7 +9,6 @@ from .board_ui import BoardUI
 from .racktile_ui import RackTileUI
 from .lettertile_ui import LetterTileUI
 from .board_scale_ui import BoardScaleUI
-from .player_ui import PlayerUI
 
 class WindowUI(QWidget):
     ''' The MainWindow widget '''
@@ -164,7 +163,7 @@ class WindowUI(QWidget):
 
     def continueClicked(self):
         if self.board.validateWord():
-            if type(self.game.current_player) is PlayerUI:
+            if type(self.game.current_player) is Player:
                 self.board.currentWord = ''
                 try:
                     self.game.current_player.continue_cb()
@@ -186,16 +185,16 @@ class WindowUI(QWidget):
             pass
 
     def passClicked(self):
-        if type(self.game.current_player) is PlayerUI:
+        if type(self.game.current_player) is Player:
             self.game.current_player.pass_cb()
 
     def endGameClicked(self):
-        if type(self.game.current_player) is PlayerUI:
+        if type(self.game.current_player) is Player:
             self.update()
             self.gameOver()
 
     def exchangeClicked(self):
-        if type(self.game.current_player) is PlayerUI:
+        if type(self.game.current_player) is Player:
             self.game.current_player.exchange_cb()
 
     def playerDone(self, player, move, *args):
