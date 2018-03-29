@@ -137,7 +137,9 @@ class WindowUI(QWidget):
                                         False)
 
     def playerNext(self):
-        player = self.game.next_player()
+        print('HELLO')
+        self.game.set_next_player()
+        player = self.game.get_next_player()
 
         self.letterChanged()
         self.update()
@@ -209,11 +211,10 @@ class WindowUI(QWidget):
 
         self.update()
 
-        if self.game.state() == self.game.RUNNING:
+        if self.game.get_state() == self.game.RUNNING:
             self.game.current_player.update_letters()
             self.playerNext()
         else:
-            self.game.finish_score()
             self.update()
             self.gameOver()
 

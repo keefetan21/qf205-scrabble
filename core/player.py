@@ -52,7 +52,7 @@ class Player(metaclass=ABCMeta):
         ''' A place-word-move to get called in play() '''
         score = self.game.board.get_word_score(self.game.letters, x, y,
                                                direction, word)
-        self.game.add_word(self, x, y, direction, word)
+        self.game.add_word_by_current_player(self, x, y, direction, word)
         self.played(self.PLACE_WORD, x, y, direction, word, score)
 
     def played(self, *move):
