@@ -113,6 +113,8 @@ class Board:
     def score_with_bonus(self, letter_set, really_new_words):
         board_bonus = {"m": "*2", "w2": "*2", "w3": "*3", "l2": "2", "l3": "3"}
 
+        print(self.board_score)
+
         start = really_new_words[0][0]
         end = really_new_words[0][1]
         formula = "("
@@ -137,5 +139,7 @@ class Board:
                 formula += ("+")
             else:
                 formula += ")" + word_multiplier
+
+            self.board_score.loc = "1"
 
         return formula
