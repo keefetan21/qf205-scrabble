@@ -9,7 +9,6 @@ from .board_ui import BoardUI
 from .racktile_ui import RackTileUI
 from .lettertile_ui import LetterTileUI
 from .board_scale_ui import BoardScaleUI
-from .player_ui import PlayerUI
 
 class WindowUI(QWidget):
     ''' The Main Window settings '''
@@ -74,6 +73,11 @@ class WindowUI(QWidget):
         self.exchange_button.setEnabled(False)
         self.exchange_button.setFixedSize(200, 50)
         self.exchange_button.clicked.connect(self.exchangeClicked)
+        self.end_game_button = QPushButton('&End Game')
+        self.end_game_button.setEnabled(True)
+        self.end_game_button.setFixedSize(130, 25)
+        self.end_game_button.clicked.connect(self.endGameClicked)
+        self.buttons.addWidget(self.end_game_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.exchange_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.pass_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.continue_button, alignment=Qt.AlignCenter)
@@ -147,7 +151,8 @@ class WindowUI(QWidget):
 
     def playerNext(self):
         ''' Change letter and player name on the rack '''
-        player = self.game.next_player()
+        self.game.set_next_player()
+        player = self.game.get_next_player()
 
         self.letterChanged()
         self.update()
@@ -168,7 +173,7 @@ class WindowUI(QWidget):
 
     def continueClicked(self):
         if self.board.validateWord():
-            if type(self.game.current_player) is PlayerUI:
+            if type(self.game.current_player) is Player:
                 self.board.currentWord = ''
                 try:
                     self.game.current_player.continue_cb()
@@ -190,11 +195,16 @@ class WindowUI(QWidget):
             pass
 
     def passClicked(self):
-        if type(self.game.current_player) is PlayerUI:
+        if type(self.game.current_player) is Player:
             self.game.current_player.pass_cb()
 
+    def endGameClicked(self):
+        if type(self.game.current_player) is Player:
+            self.update()
+            self.gameOver()
+
     def exchangeClicked(self):
-        if type(self.game.current_player) is PlayerUI:
+        if type(self.game.current_player) is Player:
             self.game.current_player.exchange_cb()
 
     def playerDone(self, player, move, *args):
@@ -219,11 +229,10 @@ class WindowUI(QWidget):
 
         self.update()
 
-        if self.game.state() == self.game.RUNNING:
+        if self.game.get_state() == self.game.RUNNING:
             self.game.current_player.update_letters()
             self.playerNext()
         else:
-            self.game.finish_score()
             self.update()
             self.gameOver()
 
@@ -238,7 +247,7 @@ class WindowUI(QWidget):
             text = ''.join(filter(lambda x: x in self.game.letters.letters,
                                   text.lower()))
 
-            if len(text) == count and all(self.game.letters.available(c) for c
+            if len(text) == count and all(self.game.letters.is_available(c) for c
                                           in text):
                 return text
 
@@ -250,4 +259,6 @@ class WindowUI(QWidget):
                                    '<b><font color=%s>%s</font></b> has won!') %
                                   (winner.color, winner.name),
                                   QMessageBox.Ok, self)
-        self.dialog.show()
+        result = self.dialog.exec_()
+        if (result == QMessageBox.Ok or result == QMessageBox.Close):
+            exit()

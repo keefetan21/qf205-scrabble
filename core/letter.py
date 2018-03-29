@@ -1,7 +1,6 @@
 class Letter:
     '''
-    A connection between a simple char on the board and the player who placed
-    it there.
+    A Letter class representing a letter on the scrabble board
     '''
     def __init__(self, char, player, x, y):
         self.char = char
