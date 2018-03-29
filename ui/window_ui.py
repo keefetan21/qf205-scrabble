@@ -23,7 +23,8 @@ class WindowUI(QWidget):
         self.setWindowTitle('Scrabble')
         self.resize(1000, 800)
         self.setStyleSheet('QGroupBox { border:0; font:bold;' +
-                           'padding:20px 10px; min-width:220px; }')
+                           'padding:10px 10px; min-width:250px; }' 
+                            + 'QGroupBox::title{ font-size: 100px; }')
 
         self.board = BoardUI(game.width, game.height)
         self.rack = RackTileUI(game.rack_size, game.width, game.height)
@@ -57,15 +58,15 @@ class WindowUI(QWidget):
         self.buttons.setSpacing(3)
         self.continue_button = QPushButton('Place &Word')
         self.continue_button.setEnabled(False)
-        self.continue_button.setFixedSize(130, 25)
+        self.continue_button.setFixedSize(200, 50)
         self.continue_button.clicked.connect(self.continueClicked)
         self.pass_button = QPushButton('&Pass')
         self.pass_button.setEnabled(False)
-        self.pass_button.setFixedSize(130, 25)
+        self.pass_button.setFixedSize(200, 50)
         self.pass_button.clicked.connect(self.passClicked)
         self.exchange_button = QPushButton('&Exchange')
         self.exchange_button.setEnabled(False)
-        self.exchange_button.setFixedSize(130, 25)
+        self.exchange_button.setFixedSize(200, 50)
         self.exchange_button.clicked.connect(self.exchangeClicked)
         self.buttons.addWidget(self.exchange_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.pass_button, alignment=Qt.AlignCenter)
@@ -97,7 +98,7 @@ class WindowUI(QWidget):
 
     def update(self, *args, **kwargs):
         self.rankings.setText(
-            '<br>'.join('%i. <font color=%s>%s</font> (%i points)' %
+            '<br>'.join('<font size=8>%i.</font> <font size=8 color=%s>%s</font> <font size=8>(%i points)</font>' %
                         (i + 1, player.color, player.name, player.score)
                         for i, player in
                         enumerate(sorted(self.game.players, reverse=True,

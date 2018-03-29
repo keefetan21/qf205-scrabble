@@ -24,7 +24,7 @@ class BoardUI(QGraphicsItem):
     COLOR_HIGHLIGHT = QColor('#fff5a6')
     PEN_GRID = QPen(QColor(204, 204, 204), 1, Qt.SolidLine)
     FONT_LEGEND = QFont('Sans', int((LetterTileUI.LETTER_SIZE + 10) / 5))
-    PEN_LEGEND = QPen(QColor('#fff'), 1, Qt.SolidLine)
+    PEN_LEGEND = QPen(QColor('#000'), 1, Qt.SolidLine)
     df = pd.read_csv(BOARD_MULTIPLIER_PATH, header=None)
 
     def __init__(self, width, height):
@@ -49,27 +49,37 @@ class BoardUI(QGraphicsItem):
     def paint(self, painter, objects, widget):
         ''' Required by QGraphicsItem '''
         painter.setFont(self.FONT_LEGEND)
-
+        
         for y, x in product(range(self.height), range(self.width)):
 
             painter.setPen(self.PEN_GRID)
-            if self.highlight == (x, y):
-                painter.setBrush(self.COLOR_HIGHLIGHT)
-            else:
-                currentGrid = self.df.loc[x, y]
+#            if self.highlight == (x, y):
+##               painter.setBrush(self.COLOR_HIGHLIGHT)
+#            else:
+            currentGrid = self.df.loc[x, y]
 
-                colorDict = {'w3': QColor(241, 63, 63), 'w2': QColor(249, 187, 190), \
-                             'l3': QColor(8, 170, 253), 'l2': QColor(95, 224, 255), \
-                             '1': QColor(11, 158, 129), 'm': QColor(249, 187, 190)}
-                painter.setBrush(colorDict.get(currentGrid))
-
+            colorDict = {'w3': QColor(241, 63, 63), 'w2': QColor(249, 187, 190), \
+                         'l3': QColor(8, 170, 253), 'l2': QColor(95, 224, 255), \
+                         '1': QColor(11, 158, 129), 'm': QColor(249, 187, 190)}
+            textDict = {'w3' : 'Triple\nWord', 'w2' : 'Double\nWord', \
+                        'l3' : 'Triple\nLetter','l2' : 'Double\nLetter', \
+                        '1' : "" , 'm' : ""}
+            
+            painter.setBrush(colorDict.get(currentGrid))
+                
             #               painter.setBrush(self.COLOR_ODD if (x + y) % 2 != 0 else
             #                                 self.COLOR_EVEN)
 
             painter.drawRect(self.LEGEND_SIZE + x * self.CELL_SIZE,
                              self.LEGEND_SIZE + y * self.CELL_SIZE,
                              self.CELL_SIZE, self.CELL_SIZE)
+            
+            painter.setPen(QPen(QColor('#000'), Qt.SolidLine))
 
+            painter.drawText(QRect(self.LEGEND_SIZE + x * self.CELL_SIZE,
+                             self.LEGEND_SIZE + y * self.CELL_SIZE,
+                             self.CELL_SIZE, self.CELL_SIZE),Qt.AlignCenter,str(textDict.get(currentGrid)))
+            
             if x == 0:
                 painter.setPen(self.PEN_LEGEND)
                 painter.drawText(QRect(0, self.LEGEND_SIZE + y *
