@@ -137,7 +137,6 @@ class WindowUI(QWidget):
                                         False)
 
     def playerNext(self):
-        print('HELLO')
         self.game.set_next_player()
         player = self.game.get_next_player()
 

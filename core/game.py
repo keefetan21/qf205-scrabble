@@ -1,7 +1,6 @@
 from .board import Board
 from .letterset import LetterSet
 from .letter import Letter
-from .player import Player
 
 import numpy as np
 
