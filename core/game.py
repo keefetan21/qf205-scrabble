@@ -23,7 +23,7 @@ class Game:
         self.players = []
         self.current_player = None
         self.moves = []
-        self.get_letters = self.letters.random_letters
+        self.get_letters = self.letters.get_random_letters
         self.lap = 0
         self.turn = 0
         self.empty = True

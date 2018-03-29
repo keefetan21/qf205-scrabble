@@ -42,9 +42,9 @@ class Player(metaclass=ABCMeta):
         for c in letters:
             pos = self.letters.find(c)
             self.letters = self.letters[:pos] + self.letters[pos + 1:]
-            self.game.letters.incr_count(c)
+            self.game.letters.increase_count(c)
         for c in new_letters:
-            self.game.letters.decr_count(c)
+            self.game.letters.decrease_count(c)
         self.letters += new_letters
         self.played(self.EXCHANGE_LETTERS, letters, new_letters)
 
@@ -70,4 +70,4 @@ class Player(metaclass=ABCMeta):
             new_letters = self.game.get_letters(count)
             self.letters += new_letters
             for c in new_letters:
-                self.game.letters.decr_count(c)
+                self.game.letters.decrease_count(c)

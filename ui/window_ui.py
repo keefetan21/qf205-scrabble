@@ -238,7 +238,7 @@ class WindowUI(QWidget):
             text = ''.join(filter(lambda x: x in self.game.letters.letters,
                                   text.lower()))
 
-            if len(text) == count and all(self.game.letters.available(c) for c
+            if len(text) == count and all(self.game.letters.is_available(c) for c
                                           in text):
                 return text
 
