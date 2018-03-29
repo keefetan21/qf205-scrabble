@@ -67,6 +67,11 @@ class WindowUI(QWidget):
         self.exchange_button.setEnabled(False)
         self.exchange_button.setFixedSize(130, 25)
         self.exchange_button.clicked.connect(self.exchangeClicked)
+        self.end_game_button = QPushButton('&End Game')
+        self.end_game_button.setEnabled(True)
+        self.end_game_button.setFixedSize(130, 25)
+        self.end_game_button.clicked.connect(self.endGameClicked)
+        self.buttons.addWidget(self.end_game_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.exchange_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.pass_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.continue_button, alignment=Qt.AlignCenter)
@@ -184,6 +189,11 @@ class WindowUI(QWidget):
         if type(self.game.current_player) is PlayerUI:
             self.game.current_player.pass_cb()
 
+    def endGameClicked(self):
+        if type(self.game.current_player) is PlayerUI:
+            self.update()
+            self.gameOver()
+
     def exchangeClicked(self):
         if type(self.game.current_player) is PlayerUI:
             self.game.current_player.exchange_cb()
@@ -240,4 +250,6 @@ class WindowUI(QWidget):
                                    '<b><font color=%s>%s</font></b> has won!') %
                                   (winner.color, winner.name),
                                   QMessageBox.Ok, self)
-        self.dialog.show()
+        result = self.dialog.exec_()
+        if (result == QMessageBox.Ok or result == QMessageBox.Close):
+            exit()
