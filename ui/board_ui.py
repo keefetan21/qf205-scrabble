@@ -8,6 +8,9 @@ from .lettertile_ui import LetterTileUI
 
 import pandas as pd
 
+''' Read words.csv file for words.csv that act a dictionary for the game 
+    Read board_multiplier.csv file for assigning colors and score labels 
+'''
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEFAULT_WORDS_PATH = os.path.join(BASE_DIR, 'data', 'words.csv')
 BOARD_MULTIPLIER_PATH = os.path.join(BASE_DIR, 'data', 'board_multiplier.csv')
@@ -57,7 +60,9 @@ class BoardUI(QGraphicsItem):
 ##               painter.setBrush(self.COLOR_HIGHLIGHT)
 #            else:
             currentGrid = self.df.loc[x, y]
-
+            '''
+            Using Python Dictionary to map the score labels and colors 
+            '''
             colorDict = {'w3': QColor(241, 63, 63), 'w2': QColor(249, 187, 190), \
                          'l3': QColor(8, 170, 253), 'l2': QColor(95, 224, 255), \
                          '1': QColor(11, 158, 129), 'm': QColor(249, 187, 190)}
