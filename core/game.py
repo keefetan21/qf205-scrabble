@@ -37,8 +37,7 @@ class Game:
         # Retrieve last 4 moves
         last_moves = self.moves[-4:]
 
-        if (len(last_moves) == 4 and all(m[0] != Player.PLACE_WORD for p, m in last_moves)) or \
-           (self.letters.remaining_letters == 0 and any(not p.letters for p in self.players)):
+        if (self.letters.remaining_letters == 0 and any(not p.letters for p in self.players)):
             return self.GAME_OVER
         return self.RUNNING
 
