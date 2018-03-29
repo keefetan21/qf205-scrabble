@@ -11,19 +11,22 @@ from .lettertile_ui import LetterTileUI
 from .board_scale_ui import BoardScaleUI
 
 class WindowUI(QWidget):
-    ''' The MainWindow widget '''
+    ''' The Main Window settings '''
 
     def __init__(self, game):
         super().__init__()
 
         self.game = game
         self.game.ui = self
-
+        ''' set window title '''
         self.setWindowTitle('Scrabble')
+        ''' set window size '''
         self.resize(1000, 800)
-        self.setStyleSheet('QGroupBox { border:0; font:bold;' +
-                           'padding:20px 10px; min-width:220px; }')
-
+        ''' set background color, size, padding, font for the side bar '''
+        self.setStyleSheet('QGroupBox { background-color: #fff; border:0; font:bold;' +
+                           'padding:20px 20px; min-width:250px; }' 
+                            + 'QGroupBox::title{ font-size: 100px; }')
+        
         self.board = BoardUI(game.width, game.height)
         self.rack = RackTileUI(game.rack_size, game.width, game.height)
         self.scene = QGraphicsScene()
@@ -33,38 +36,42 @@ class WindowUI(QWidget):
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
         self.view = BoardScaleUI(self.scene, self)
         self.view.letterChanged.connect(self.letterChanged)
-
+        
+        '''Create a box called Ranking '''
         self.ranking = QGroupBox('Rankings')
         self.rankings = QLabel()
         rankings = QVBoxLayout()
         rankings.addWidget(self.rankings)
         self.ranking.setLayout(rankings)
-
+        
+        ''' Create a box called Statistics '''
         self.statistic = QGroupBox('Statistics')
         self.statistics = QLabel()
         statistics = QVBoxLayout()
         statistics.addWidget(self.statistics)
         self.statistic.setLayout(statistics)
-
+        
+        ''' Create a box called Last 10 Moves '''
         self.move = QGroupBox('Last 10 Moves')
         self.moves = QLabel()
         moves = QVBoxLayout()
         moves.addWidget(self.moves)
         self.move.setLayout(moves)
-
+        
+        ''' Create buttons and set the specification for the buttons'''
         self.buttons = QVBoxLayout()
         self.buttons.setSpacing(3)
         self.continue_button = QPushButton('Place &Word')
         self.continue_button.setEnabled(False)
-        self.continue_button.setFixedSize(130, 25)
+        self.continue_button.setFixedSize(200, 50)
         self.continue_button.clicked.connect(self.continueClicked)
         self.pass_button = QPushButton('&Pass')
         self.pass_button.setEnabled(False)
-        self.pass_button.setFixedSize(130, 25)
+        self.pass_button.setFixedSize(200, 50)
         self.pass_button.clicked.connect(self.passClicked)
         self.exchange_button = QPushButton('&Exchange')
         self.exchange_button.setEnabled(False)
-        self.exchange_button.setFixedSize(130, 25)
+        self.exchange_button.setFixedSize(200, 50)
         self.exchange_button.clicked.connect(self.exchangeClicked)
         self.end_game_button = QPushButton('&End Game')
         self.end_game_button.setEnabled(True)
@@ -98,10 +105,12 @@ class WindowUI(QWidget):
         for player in self.game.players:
             player.played_cb = self.playerDone
         self.playerNext()
-
+        
+        
     def update(self, *args, **kwargs):
+        ''' Whenever user clicks a button, this method will update the User Interface  '''
         self.rankings.setText(
-            '<br>'.join('%i. <font color=%s>%s</font> (%i points)' %
+            '<br>'.join('<font size=8>%i.</font> <font size=8 color=%s>%s</font> <font size=8>(%i points)</font>' %
                         (i + 1, player.color, player.name, player.score)
                         for i, player in
                         enumerate(sorted(self.game.players, reverse=True,
@@ -141,6 +150,7 @@ class WindowUI(QWidget):
                                         False)
 
     def playerNext(self):
+        ''' Change letter and player name on the rack '''
         self.game.set_next_player()
         player = self.game.get_next_player()
 

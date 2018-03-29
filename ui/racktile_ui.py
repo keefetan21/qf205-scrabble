@@ -54,6 +54,7 @@ class RackTileUI(QGraphicsItem):
                                                      - 4)),
                          Qt.AlignCenter | Qt.AlignBottom,
                          '%s\'s Rack:' % self.name)
+       
 
     def position(self, letter):
         ''' Get the position of the letter referring to the rack '''
