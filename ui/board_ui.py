@@ -8,9 +8,8 @@ from .lettertile_ui import LetterTileUI
 
 import pandas as pd
 
-''' Read words.csv file for words.csv that act a dictionary for the game 
-    Read board_multiplier.csv file for assigning colors and score labels 
-'''
+# Read words.csv file for words.csv that act a dictionary for the game
+# Read board_multiplier.csv file for assigning colors and score labels
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEFAULT_WORDS_PATH = os.path.join(BASE_DIR, 'data', 'words.csv')
 BOARD_MULTIPLIER_PATH = os.path.join(BASE_DIR, 'data', 'board_multiplier.csv')
@@ -18,8 +17,9 @@ BOARD_MULTIPLIER_PATH = os.path.join(BASE_DIR, 'data', 'board_multiplier.csv')
 class BoardUI(QGraphicsItem):
     '''
     A graphical representation of a scrabble board. It also keeps track of
-    all LetterItems 'placed' on it.
+    all Letters 'placed' on it.
     '''
+
     CELL_SIZE = LetterTileUI.LETTER_SIZE + 1.5
     LEGEND_SIZE = int((LetterTileUI.LETTER_SIZE + 5) / 2)
     COLOR_EVEN = QColor(245, 245, 245)
@@ -28,52 +28,50 @@ class BoardUI(QGraphicsItem):
     PEN_GRID = QPen(QColor(204, 204, 204), 1, Qt.SolidLine)
     FONT_LEGEND = QFont('Sans', int((LetterTileUI.LETTER_SIZE + 10) / 5))
     PEN_LEGEND = QPen(QColor('#000'), 1, Qt.SolidLine)
+
+    # Read Board Multiplier CSV
     df = pd.read_csv(BOARD_MULTIPLIER_PATH, header=None)
 
     def __init__(self, width, height):
-        ''' Construct a new BoardItem '''
+        '''
+        Construct a new BoardUI
+        '''
         super().__init__()
 
-        # load csv here
-
-        self.words = pd.read_csv(
-            DEFAULT_WORDS_PATH, sep=',', header=None).values
+        # Read Words CSV
+        self.words = pd.read_csv(DEFAULT_WORDS_PATH, sep=',', header=None).values
         self.width = width
         self.height = height
-        self.rect = QRectF(0, 0, width * self.CELL_SIZE + self.LEGEND_SIZE,
-                           height * self.CELL_SIZE + self.LEGEND_SIZE)
+        self.rect = QRectF(0, 0, width * self.CELL_SIZE + self.LEGEND_SIZE, height * self.CELL_SIZE + self.LEGEND_SIZE)
         self.letters = [None for _ in range(width * height)]
         self.highlight = None
 
     def boundingRect(self):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         return self.rect
 
     def paint(self, painter, objects, widget):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         painter.setFont(self.FONT_LEGEND)
         
         for y, x in product(range(self.height), range(self.width)):
 
             painter.setPen(self.PEN_GRID)
-#            if self.highlight == (x, y):
-##               painter.setBrush(self.COLOR_HIGHLIGHT)
-#            else:
             currentGrid = self.df.loc[x, y]
-            '''
-            Using Python Dictionary to map the score labels and colors 
-            '''
-            colorDict = {'w3': QColor(241, 63, 63), 'w2': QColor(249, 187, 190), \
-                         'l3': QColor(8, 170, 253), 'l2': QColor(95, 224, 255), \
+
+            # Using Python Dictionary to map the score labels and colors
+            colorDict = {'w3': QColor(241, 63, 63), 'w2': QColor(249, 187, 190),
+                         'l3': QColor(8, 170, 253), 'l2': QColor(95, 224, 255),
                          '1': QColor(11, 158, 129), 'm': QColor(249, 187, 190)}
-            textDict = {'w3' : 'Triple\nWord', 'w2' : 'Double\nWord', \
-                        'l3' : 'Triple\nLetter','l2' : 'Double\nLetter', \
-                        '1' : "" , 'm' : ""}
+            textDict = {'w3': 'Triple\nWord', 'w2': 'Double\nWord',
+                        'l3': 'Triple\nLetter', 'l2': 'Double\nLetter',
+                        '1': "", 'm': ""}
             
             painter.setBrush(colorDict.get(currentGrid))
-                
-            #               painter.setBrush(self.COLOR_ODD if (x + y) % 2 != 0 else
-            #                                 self.COLOR_EVEN)
 
             painter.drawRect(self.LEGEND_SIZE + x * self.CELL_SIZE,
                              self.LEGEND_SIZE + y * self.CELL_SIZE,
@@ -97,8 +95,10 @@ class BoardUI(QGraphicsItem):
                                        0, self.CELL_SIZE, self.LEGEND_SIZE - 2),
                                  Qt.AlignCenter | Qt.AlignBottom, str(x))
 
-    def position(self, letter):
-        ''' Get the x and y position of the letter referring to the board '''
+    def get_position(self, letter):
+        '''
+        Get the coordinates of the letter on the board
+        '''
         position = self.mapFromScene(letter.center())
         x = position.x() - self.LEGEND_SIZE
         y = position.y() - self.LEGEND_SIZE
@@ -112,25 +112,32 @@ class BoardUI(QGraphicsItem):
             return (ix, iy)
 
     def letterMoveEvent(self, letter):
-        ''' Custom letter event '''
-        self.highlight = self.position(letter)
+        '''
+        Event that occurs when letter is moved
+        '''
+        self.highlight = self.get_position(letter)
         self.update(self.rect)
 
     def letterMoveOutEvent(self, letter):
-        ''' Custom letter event '''
+        '''
+        Event that occurs when letter is moved out
+        '''
         self.highlight = None
         self.update(self.rect)
 
     def letterReleaseEvent(self, letter):
-        ''' Custom letter event '''
-        pos = self.position(letter)
+        '''
+        Event that occurs when a letter is released
+        '''
+        pos = self.get_position(letter)
         letter.own(self, *pos) if pos else letter.undo()
         self.highlight = None
         self.update(self.rect)
 
     def addLetter(self, letter, x, y, move=True):
-        ''' Gets call'd to place a letter on the board '''
-        assert self.letters[y * self.width + x] is None
+        '''
+        Places a letter on the board
+        '''
         self.letters[y * self.width + x] = letter
         pos = QPointF(self.LEGEND_SIZE + x * self.CELL_SIZE +
                       int((self.CELL_SIZE - letter.LETTER_SIZE) / 2),
@@ -139,27 +146,35 @@ class BoardUI(QGraphicsItem):
         (letter.move if move else letter.setPos)(self.mapToScene(pos))
 
     def removeLetter(self, letter, x, y, move=True):
-        ''' Gets call'd to remove a letter from the board '''
-        assert self.letters[y * self.height + x] == letter
+        '''
+        Removes a letter on the board
+        '''
         self.letters[y * self.height + x] = None
 
     def getLetter(self, x, y):
-        ''' Get the letter at position (x, y) '''
-        assert x >= 0 and x < self.width and y >= 0 and y < self.height
+        '''
+        Get the letter at position (x, y)
+        '''
         return self.letters[y * self.height + x]
 
     def getLetterPosition(self, letter):
-        ''' Get the position of a letter '''
+        '''
+        Get the position of a letter
+        '''
         for i, l in enumerate(self.letters):
             if letter == l:
                 return (i % self.width, int(i / self.width))
 
     def validateWord(self):
+        '''
+        Validate word
+        '''
         return self.currentWord in self.words
 
     def validNewWord(self):
-        # pass
-        ''' Checks if there is one valid new word on the board '''
+        '''
+        Checks if there is one valid new word on the board
+        '''
         letters_ = [l for l in self.letters if l and not l.is_safe]
         letters = [self.getLetterPosition(l) for l in letters_]
         old_letters = [l for l in self.letters if l and l.is_safe]
@@ -204,8 +219,9 @@ class BoardUI(QGraphicsItem):
                all(l in word for l in letters_)
 
     def getNewWord(self):
-        ''' Gets the new word '''
-        assert self.validNewWord()
+        '''
+        Gets the new word placed on board
+        '''
         letters = [self.getLetterPosition(l) for l in self.letters if l and not l.is_safe]
         letter = letters[0]
         direction = 'right'
