@@ -6,8 +6,7 @@ from .lettertile_ui import LetterTileUI
 
 class RackTileUI(QGraphicsItem):
     '''
-    A graphical representation of a scrabble rack. It also keeps track of
-    all LetterItems 'placed' on it.
+    A graphical representation of a scrabble rack
     '''
     CELL_SIZE = LetterTileUI.LETTER_SIZE + 10
     CELL_PEN = QPen(QColor(204,204,204), 1, Qt.SolidLine)
@@ -17,7 +16,9 @@ class RackTileUI(QGraphicsItem):
     COLOR_HIGHLIGHT = QColor('#fff5a6')
 
     def __init__(self, size, width, height):
-        ''' Construct a new RackItem '''
+        '''
+        Construct a new RackTileUI
+        '''
         super().__init__()
         self.name = 'Unknown'
         self.color = '#000000'
@@ -30,11 +31,15 @@ class RackTileUI(QGraphicsItem):
         self.setPos((max(self.width, width * 60 + 30) - self.width) / 2, 60 * height + 30)
 
     def boundingRect(self):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         return self.rect
 
     def paint(self, painter, objects, widget):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         painter.setPen(self.CELL_PEN)
         painter.setBrush(self.CELL_BRUSH)
         painter.drawRoundedRect(0, int(self.CELL_SIZE * 3 / 4), self.width,
@@ -50,14 +55,13 @@ class RackTileUI(QGraphicsItem):
             painter.drawLine(x, int(self.CELL_SIZE * 3 / 4), x, self.height)
         painter.setPen(QPen(QColor(self.color), 1, Qt.SolidLine))
         painter.setFont(self.FONT)
-        painter.drawText(QRect(0, 0, self.width, int(self.CELL_SIZE * 3 / 4
-                                                     - 4)),
-                         Qt.AlignCenter | Qt.AlignBottom,
+        painter.drawText(QRect(0, 0, self.width, int(self.CELL_SIZE * 3 / 4 - 4)), Qt.AlignCenter | Qt.AlignBottom,
                          '%s\'s Rack:' % self.name)
-       
 
     def position(self, letter):
-        ''' Get the position of the letter referring to the rack '''
+        '''
+        Get the position of the letter on the rack
+        '''
         position = self.mapFromScene(letter.center())
         x = position.x()
         y = position.y() - self.LEGEND_SIZE
@@ -68,24 +72,32 @@ class RackTileUI(QGraphicsItem):
             return int(x / self.CELL_SIZE)
 
     def letterMoveEvent(self, letter):
-        ''' Custom letter event '''
+        '''
+        Custom letter event
+        '''
         self.highlight = self.position(letter)
         self.update(self.rect)
 
     def letterMoveOutEvent(self, letter):
-        ''' Custom letter event '''
+        '''
+        Custom letter event
+        '''
         self.highlight = None
         self.update(self.rect)
 
     def letterReleaseEvent(self, letter):
-        ''' Custom letter event '''
+        '''
+        Custom letter event
+        '''
         pos = self.position(letter)
         letter.undo() if pos is None else letter.own(self, pos)
         self.highlight = None
         self.update(self.rect)
 
     def addLetter(self, letter, position, move=True):
-        ''' Gets call'd to place a letter on the board '''
+        '''
+        Place a letter on the board
+        '''
         assert self.letters[position] is None
         self.letters[position] = letter
         pos = QPointF(position * self.CELL_SIZE + int((self.CELL_SIZE -
@@ -94,6 +106,8 @@ class RackTileUI(QGraphicsItem):
         (letter.move if move else letter.setPos)(self.mapToScene(pos))
 
     def removeLetter(self, letter, position, move=True):
-        ''' Gets call'd to remove a letter from the board '''
+        '''
+        Remove a letter from the board
+        '''
         assert self.letters[position] == letter
         self.letters[position] = None
