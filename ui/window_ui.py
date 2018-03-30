@@ -11,18 +11,23 @@ from .lettertile_ui import LetterTileUI
 from .board_scale_ui import BoardScaleUI
 
 class WindowUI(QWidget):
-    ''' The Main Window settings '''
+    '''
+    The Main Window
+    '''
 
     def __init__(self, game):
         super().__init__()
 
         self.game = game
         self.game.ui = self
-        ''' set window title '''
+
+        # Set window title
         self.setWindowTitle('Scrabble')
-        ''' set window size '''
+
+        # Set window size
         self.resize(1000, 800)
-        ''' set background color, size, padding, font for the side bar '''
+
+        # Set background color, size, padding, font for the side bar
         self.setStyleSheet('QGroupBox { background-color: #fff; border:0; font:bold;' +
                            'padding:20px 20px; min-width:250px; }' 
                             + 'QGroupBox::title{ font-size: 100px; }')
@@ -37,34 +42,34 @@ class WindowUI(QWidget):
         self.view = BoardScaleUI(self.scene, self)
         self.view.letterChanged.connect(self.letterChanged)
         
-        '''Create a box called Ranking '''
+        # Create a box called Ranking
         self.ranking = QGroupBox('Rankings')
         self.rankings = QLabel()
         rankings = QVBoxLayout()
         rankings.addWidget(self.rankings)
         self.ranking.setLayout(rankings)
         
-        ''' Create a box called Statistics '''
+        # Create a box called Statistics
         self.statistic = QGroupBox('Statistics')
         self.statistics = QLabel()
         statistics = QVBoxLayout()
         statistics.addWidget(self.statistics)
         self.statistic.setLayout(statistics)
         
-        ''' Create a box called Last 10 Moves '''
+        # Create a box called Last 10 Moves
         self.move = QGroupBox('Last 10 Moves')
         self.moves = QLabel()
         moves = QVBoxLayout()
         moves.addWidget(self.moves)
         self.move.setLayout(moves)
         
-        ''' Create buttons and set the specification for the buttons'''
+        # Create buttons and set the specification for the buttons
         self.buttons = QVBoxLayout()
         self.buttons.setSpacing(3)
-        self.continue_button = QPushButton('Place &Word')
-        self.continue_button.setEnabled(False)
-        self.continue_button.setFixedSize(200, 50)
-        self.continue_button.clicked.connect(self.continueClicked)
+        self.place_word_button = QPushButton('Place &Word')
+        self.place_word_button.setEnabled(False)
+        self.place_word_button.setFixedSize(200, 50)
+        self.place_word_button.clicked.connect(self.continueClicked)
         self.pass_button = QPushButton('&Pass')
         self.pass_button.setEnabled(False)
         self.pass_button.setFixedSize(200, 50)
@@ -80,7 +85,7 @@ class WindowUI(QWidget):
         self.buttons.addWidget(self.end_game_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.exchange_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.pass_button, alignment=Qt.AlignCenter)
-        self.buttons.addWidget(self.continue_button, alignment=Qt.AlignCenter)
+        self.buttons.addWidget(self.place_word_button, alignment=Qt.AlignCenter)
 
         information = QVBoxLayout()
         # newly add in
@@ -106,9 +111,10 @@ class WindowUI(QWidget):
             player.played_cb = self.playerDone
         self.playerNext()
         
-        
     def update(self, *args, **kwargs):
-        ''' Whenever user clicks a button, this method will update the User Interface  '''
+        '''
+        Whenever player clicks a button, this method will update the UI
+        '''
         self.rankings.setText(
             '<br>'.join('<font size=8>%i.</font> <font size=8 color=%s>%s</font> <font size=8>(%i points)</font>' %
                         (i + 1, player.color, player.name, player.score)
@@ -136,7 +142,9 @@ class WindowUI(QWidget):
         super().update(*args, **kwargs)
 
     def letterChanged(self):
-        ''' As soon as a letter changes we need to en/disable all controls '''
+        '''
+        As soon as a letter changes we need to enable/disable all controls
+        '''
         self.exchange_button.setEnabled(False)
         self.exchange_button.setText('Exchange')
         if self.game.letters.remaining_letters >= self.game.rack_size:
@@ -146,11 +154,13 @@ class WindowUI(QWidget):
                 self.exchange_button.setText('Exchange: %s' % selected)
                 self.exchange_button.setEnabled(True)
         self.pass_button.setEnabled(True)
-        self.continue_button.setEnabled(True if self.board.validNewWord() else
+        self.place_word_button.setEnabled(True if self.board.validNewWord() else
                                         False)
 
     def playerNext(self):
-        ''' Change letter and player name on the rack '''
+        '''
+        Get next player and modify UI to display correct player information
+        '''
         self.game.set_next_player()
         player = self.game.get_next_player()
 
@@ -169,9 +179,42 @@ class WindowUI(QWidget):
 
         self.update()
         player.played_cb = self.playerDone
-        # player.play()
+
+    def playerDone(self, player, move, *args):
+        '''
+        Complete player's turn
+        '''
+        self.exchange_button.setEnabled(False)
+        self.exchange_button.setText('Exchange')
+        self.pass_button.setEnabled(False)
+        self.place_word_button.setEnabled(False)
+
+        for item in self.scene.items():
+            if type(item) is LetterTileUI and not item.is_safe and not item.deleted:
+                item.own(None)
+                item.fade()
+
+        for x, y, letter in self.game.board:
+            if not self.board.getLetter(x, y):
+                item = LetterTileUI(letter.char, self.game.letters.get_score(letter), letter.player.color, safe=True)
+                item.own(self.board, x, y, move=False)
+                self.scene.addItem(item)
+
+        self.update()
+
+        if self.game.get_state() == self.game.RUNNING:
+            self.game.current_player.update_letters()
+            self.playerNext()
+        else:
+            self.update()
+            self.gameOver()
 
     def continueClicked(self):
+        '''
+        Function that gets called when 'Place Word' is clicked
+        Validates word and calculates player's score
+        Also checks that the first word placed on the board has to be in the center tile
+        '''
         if self.board.validateWord():
             if type(self.game.current_player) is Player:
                 self.board.currentWord = ''
@@ -195,65 +238,32 @@ class WindowUI(QWidget):
             pass
 
     def passClicked(self):
+        '''
+        Function that gets called when 'Pass' is clicked
+        '''
         if type(self.game.current_player) is Player:
             self.game.current_player.pass_turn()
 
     def endGameClicked(self):
+        '''
+        Function that gets called when 'End Game' is clicked
+        '''
         if type(self.game.current_player) is Player:
             self.update()
             self.gameOver()
 
     def exchangeClicked(self):
+        '''
+        Function that gets called when 'Exchange' is clicked
+        '''
         if type(self.game.current_player) is Player:
             self.game.current_player.exchange_letters()
 
-    def playerDone(self, player, move, *args):
-        self.exchange_button.setEnabled(False)
-        self.exchange_button.setText('Exchange')
-        self.pass_button.setEnabled(False)
-        self.continue_button.setEnabled(False)
-
-        for item in self.scene.items():
-            if type(item) is LetterTileUI and not item.is_safe and \
-                    not item.deleted:
-                item.own(None)
-                item.fade()
-
-        for x, y, letter in self.game.board:
-            if not self.board.getLetter(x, y):
-                item = LetterTileUI(letter.char,
-                                  self.game.letters.get_score(letter),
-                                  letter.player.color, safe=True)
-                item.own(self.board, x, y, move=False)
-                self.scene.addItem(item)
-
-        self.update()
-
-        if self.game.get_state() == self.game.RUNNING:
-            self.game.current_player.update_letters()
-            self.playerNext()
-        else:
-            self.update()
-            self.gameOver()
-
-    def getLetters(self, count, msg=''):
-        print('random letters: %s' % self.game.get_letters_old(count))
-        while True:
-            text, ok = QInputDialog.getText(self, 'New Letters',
-                                            'Player: <font color=%s>%s</font><br>' % (
-                                                self.game.current_player.color, self.game.current_player.name)
-                                            + msg + 'Tell me %i new letters in order to continue..' % count)
-
-            text = ''.join(filter(lambda x: x in self.game.letters.letters,
-                                  text.lower()))
-
-            if len(text) == count and all(self.game.letters.is_available(c) for c
-                                          in text):
-                return text
-
     def gameOver(self):
-        winner = sorted(self.game.players, reverse=True,
-                        key=attrgetter('score'))[0]
+        '''
+        Function that determines the winner and ends the game
+        '''
+        winner = sorted(self.game.players, reverse=True, key=attrgetter('score'))[0]
         self.dialog = QMessageBox(QMessageBox.Information, 'Game Over',
                                   ('<b>Game Over!</b><br><br>The player ' +
                                    '<b><font color=%s>%s</font></b> has won!') %
@@ -262,3 +272,19 @@ class WindowUI(QWidget):
         result = self.dialog.exec_()
         if (result == QMessageBox.Ok or result == QMessageBox.Close):
             exit()
+
+    # DEPRECATE
+    # def getLetters(self, count, msg=''):
+    #     print('random letters: %s' % self.game.get_letters_old(count))
+    #     while True:
+    #         text, ok = QInputDialog.getText(self, 'New Letters',
+    #                                         'Player: <font color=%s>%s</font><br>' % (
+    #                                             self.game.current_player.color, self.game.current_player.name)
+    #                                         + msg + 'Tell me %i new letters in order to continue..' % count)
+    #
+    #         text = ''.join(filter(lambda x: x in self.game.letters.letters,
+    #                               text.lower()))
+    #
+    #         if len(text) == count and all(self.game.letters.is_available(c) for c
+    #                                       in text):
+    #             return text
