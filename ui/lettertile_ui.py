@@ -4,8 +4,7 @@ from PyQt5.QtGui import QColor, QPen, QFont
 
 class LetterTileUI(QGraphicsWidget):
     '''
-    A dragable objects which represents a game tile and is used as
-    an intuitive way of interaction
+    A draggable object which represents a letter tile
     '''
     LETTER_SIZE = 60
     LETTER_FONT = QFont('Sans', 60/2, QFont.DemiBold)
@@ -16,7 +15,9 @@ class LetterTileUI(QGraphicsWidget):
     BOUNDING_RECT = QRectF(0, 0, 70, 70)
 
     def __init__(self, char, score, color, safe=False):
-        ''' Construct a new visual representation of a tile '''
+        '''
+        Construct a new visual representation of a tile
+        '''
         super().__init__()
         self.owner = None
         self.char = char.upper()
@@ -42,11 +43,15 @@ class LetterTileUI(QGraphicsWidget):
         self.setOpacity(0)
 
     def boundingRect(self):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         return self.BOUNDING_RECT
 
     def paint(self, painter, objects, widget):
-        ''' Required by QGraphicsItem '''
+        '''
+        Required by QGraphicsItem
+        '''
         painter.setBrush(self.safe_brush if self.is_safe else self.normal_brush)
         if self.selected:
             painter.setPen(self.selected_pen)
@@ -68,7 +73,9 @@ class LetterTileUI(QGraphicsWidget):
                          Qt.AlignRight | Qt.AlignBottom, self.score)
 
     def itemChange(self, change, value):
-        ''' Item change event to control item movement '''
+        '''
+        Item change event to control letter tile movement
+        '''
         if not self.view and self.scene() and self.scene().views():
             self.view = self.scene().views()[0]
         if change == self.ItemPositionChange and self.view:
@@ -91,7 +98,9 @@ class LetterTileUI(QGraphicsWidget):
         return super().itemChange(change, value)
 
     def mousePressEvent(self, event):
-        ''' Fired when the LetterItem is pressed '''
+        '''
+        Event fired when the letter tile is pressed
+        '''
         self.last_valid_position = self.scenePos()
         self.hovers = set()
         self.setZValue(1000)
@@ -99,8 +108,7 @@ class LetterTileUI(QGraphicsWidget):
 
     def mouseMoveEvent(self, event):
         '''
-        Fired when the LetterItem is moved, propagates a custom letter event
-        to underlying RackItem and BoardItem objects
+        Fired when the letter tile is moved
         '''
 
         # Import statements placed here to prevent circular dependency of imports
@@ -120,8 +128,7 @@ class LetterTileUI(QGraphicsWidget):
 
     def mouseReleaseEvent(self, event):
         '''
-        Fired when the LetterItem is released, propagates a custom letter event
-        to underlying RackItem and BoardItem objects
+        Fired when the letter tile is released
         '''
 
         # Import statements placed here to prevent circular dependency of imports
@@ -142,13 +149,14 @@ class LetterTileUI(QGraphicsWidget):
             self.move(self.last_valid_position)
 
     def undo(self):
-        ''' Moves the LetterItem back to the last valid position '''
+        '''
+        Moves the letter tile back to the last valid position
+        '''
         self.move(self.last_valid_position)
 
     def own(self, new_owner, *args, **kwargs):
         '''
-        Removes the Letter from a maybe existing owner and calls the new
-        owners addLetter routine
+        Removes the Letter from a maybe existing owner and calls the new owners addLetter routine
         '''
         if self.owner:
             self.owner.removeLetter(self, *self.owner_args,
@@ -163,7 +171,9 @@ class LetterTileUI(QGraphicsWidget):
                 self.scene().views()[0].letterChanged.emit()
 
     def move(self, pos):
-        ''' A simple animation to move the letter '''
+        '''
+        A simple animation to move the letter tile
+        '''
         self.animation = QPropertyAnimation(self, b'pos')
         self.animation.setDuration(100)
         self.animation.setStartValue(self.scenePos())
@@ -171,10 +181,15 @@ class LetterTileUI(QGraphicsWidget):
         self.animation.start()
 
     def center(self):
-        ''' Get the center position of the Letter '''
+        '''
+        Get the center position of the letter tile
+        '''
         return self.scenePos() + self.LETTER_CENTER
 
     def remove(self):
+        '''
+        Delete letter tile
+        '''
         self.scene().removeItem(self)
         del self
 
