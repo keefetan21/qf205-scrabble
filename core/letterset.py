@@ -71,7 +71,7 @@ class LetterSet:
         '''
         return str(letter) in self.letters and self.get_count(letter) > 0
 
-    def get_random_letters(self, count):
+    def get_random_letters(self, count, msg=None):
         '''
         Retrieve count number of random letters from LetterSet
         '''

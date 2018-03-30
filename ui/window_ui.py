@@ -75,7 +75,7 @@ class WindowUI(QWidget):
         self.exchange_button.clicked.connect(self.exchangeClicked)
         self.end_game_button = QPushButton('&End Game')
         self.end_game_button.setEnabled(True)
-        self.end_game_button.setFixedSize(130, 25)
+        self.end_game_button.setFixedSize(200, 50)
         self.end_game_button.clicked.connect(self.endGameClicked)
         self.buttons.addWidget(self.end_game_button, alignment=Qt.AlignCenter)
         self.buttons.addWidget(self.exchange_button, alignment=Qt.AlignCenter)
@@ -169,14 +169,14 @@ class WindowUI(QWidget):
 
         self.update()
         player.played_cb = self.playerDone
-        player.play()
+        # player.play()
 
     def continueClicked(self):
         if self.board.validateWord():
             if type(self.game.current_player) is Player:
                 self.board.currentWord = ''
                 try:
-                    self.game.current_player.continue_cb()
+                    self.game.current_player.place_word()
                 except:
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Critical)
@@ -196,7 +196,7 @@ class WindowUI(QWidget):
 
     def passClicked(self):
         if type(self.game.current_player) is Player:
-            self.game.current_player.pass_cb()
+            self.game.current_player.pass_turn()
 
     def endGameClicked(self):
         if type(self.game.current_player) is Player:
@@ -205,7 +205,7 @@ class WindowUI(QWidget):
 
     def exchangeClicked(self):
         if type(self.game.current_player) is Player:
-            self.game.current_player.exchange_cb()
+            self.game.current_player.exchange_letters()
 
     def playerDone(self, player, move, *args):
         self.exchange_button.setEnabled(False)
