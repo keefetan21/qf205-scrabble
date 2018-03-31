@@ -1,4 +1,7 @@
 #! /bin/bash
-cd /Users/keefe/Desktop/qf205-scrabble;
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo $DIR;
+cd $DIR;
 python main.py;
-exit; 
+
+exit;
