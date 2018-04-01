@@ -51,7 +51,7 @@ class Game:
 
 
     def set_next_player(self):
-        '''
+        '''git
         Set the next player
         '''
         assert self.get_state() == self.RUNNING
