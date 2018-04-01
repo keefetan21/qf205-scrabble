@@ -73,16 +73,21 @@ class Board:
                 yield (word[0].x, word[0].y, 'right' if word[0].x !=
                                                         word[1].x else 'down', ''.join(l.char for l in word))
 
-    '''
-    Logic behind scoring
-    1. Check if all all adjacent words are valid
-    2. Confim with users that he/she wants to put the word in this location
-    3. Calculate double/triple letters
-    4. Calculate double/triple scores
-
-    '''
 
     def get_word_score(self, letter_set, x, y, direction, word):
+
+        '''
+        get_word_score calculates the score of the words that has just placed
+
+        :param letter_set: All the letter objects in the game (includes score + qualtity of letters)
+        :param x: x-coordinate of the starting letter
+        :param y: Y-coordinate of the starting letter
+        :param direction: Direction of the word being placed
+        :param word: The word that is being placed
+        :return: Score of the word placed (with bonuses applied)
+        '''
+
+        # Takes the parameters and merges them into a single list (letters) in the
         letters = [(x if direction == 'down' else x + i, y if direction ==
                                                               'right' else y + i, word[i]) for i in range(len(word))]
         new_letters = []
