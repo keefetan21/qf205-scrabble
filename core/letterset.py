@@ -20,24 +20,21 @@ class LetterSet:
         if filename is not None:
             self.load_file(filename)
 
+    def load_file(self, filename):
+        '''
+        Load the letters specified in a csv file into a dictionary and return the count of the remaining letters
+        '''
+        with open(filename, 'r', newline='', encoding='utf-8') as f:
+            for row in reader(f):
+                self.letters[row[0]] = [int(row[1]), int(row[2])]
+                self.remaining_letters += int(row[2])
+
     def __iter__(self):
         '''
         Define LetterSet as an Iterator
         '''
         for x in sorted(self.letters.items()):
             yield x
-
-    def load_file(self, filename):
-        '''
-        Load the letters specified in a csv file into a dictionary and return the count of the remaining letters
-        '''
-        count = 0
-        with open(filename, 'r', newline='', encoding='utf-8') as f:
-            for row in reader(f):
-                self.letters[row[0]] = [int(row[1]), int(row[2])]
-                self.remaining_letters += int(row[2])
-                count += 1
-        return count
 
     def get_score(self, letter):
         '''
