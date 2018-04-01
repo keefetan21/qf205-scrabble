@@ -22,7 +22,7 @@ class LetterSet:
 
     def load_file(self, filename):
         '''
-        Load the letters specified in a csv file into a dictionary and return the count of the remaining letters
+        Load the letters specified in a csv file into a dictionary
         '''
         with open(filename, 'r', newline='', encoding='utf-8') as f:
             for row in reader(f):
