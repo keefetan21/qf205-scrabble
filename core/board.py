@@ -151,6 +151,6 @@ class Board:
             else:
                 formula += ")" + word_multiplier
 
-            self.board_score.loc = "1"
+            # self.board_score.loc = "1"
 
         return formula
