@@ -95,15 +95,19 @@ class Board:
         :return: Score of the word placed (with bonuses applied)
         '''
 
-        # Takes the parameters and merges them into a single list (letters) in the
+        # Takes the parameters and merges them into a single list (letters) in the following format:
+        # [[x-coord, y-coord, letter1], [x-coord, y-coord, letter2] ... ]
+        # Uses list comprehension to check if down, add to x coordinate for each letter, else add to Y
         letters = [(x if direction == 'down' else x + i,
                     y if direction == 'right' else y + i, word[i]) for i in range(len(word))]
         new_letters = []
+
         for x, y, c in letters:
             if self.get_letter(x, y) is None:
                 new_letters.append((x, y, c))
 
         old_words = list(w for w in self.get_words())
+
         for x, y, c in new_letters:
             self.add_letter(Letter(c, None, x, y))
         new_words = list(w for w in self.get_words())
@@ -150,7 +154,5 @@ class Board:
                 formula += ("+")
             else:
                 formula += ")" + word_multiplier
-
-            self.board_score.loc = "1"
 
         return formula
