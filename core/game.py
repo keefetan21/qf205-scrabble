@@ -84,25 +84,3 @@ class Game:
                 self.board.add_letter(Letter(c, player, x, y))
                 pos = player.letters.index(c)
                 player.letters = player.letters[:pos] + player.letters[pos+1:]
-
-    # Deprecate
-    # def finish_score(self):
-        # assert self.get_state() == self.GAME_OVER
-        # print(self.moves)
-        # if self.moves[-1][1][0] == Player.PLACE_WORD:
-        #     print('MOVES', self.moves[-1][1][0])
-        #     winner = self.moves[-1][0]
-        #     print('Winner', winner)
-        #     for player in self.players:
-        #         if player != winner:
-        #             score = sum(self.letters.get_score(c) for c in
-        #                         player.letters)
-        #             player.score -= score
-        #             winner.score += score
-        #             print('SCORE OF ', player, ': ', score)
-        # else:
-        #     for player in self.players:
-        #         score = sum(self.letters.get_score(c) for c in player.letters)
-        #         player.score -= score
-        #         print('Player\'s Letters', player.letters)
-        #         print('SCORE OF ', player, ': ', score)

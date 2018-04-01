@@ -86,13 +86,16 @@ class Board:
 
     def get_word_score(self, letter_set, x, y, direction, word):
         '''
-        Calculate Word Score
-        Logic behind scoring:
-        1. Check if all adjacent words are valid
-        2. Confirm with users that he/she wants to put the word in this location
-        3. Calculate double/triple letters
-        4. Calculate double/triple scores
+        get_word_score calculates the score of the words that has just placed
+        :param letter_set: All the letter objects in the game (includes score + qualtity of letters)
+        :param x: x-coordinate of the starting letter
+        :param y: Y-coordinate of the starting letter
+        :param direction: Direction of the word being placed
+        :param word: The word that is being placed
+        :return: Score of the word placed (with bonuses applied)
         '''
+
+        # Takes the parameters and merges them into a single list (letters) in the
         letters = [(x if direction == 'down' else x + i,
                     y if direction == 'right' else y + i, word[i]) for i in range(len(word))]
         new_letters = []
@@ -147,5 +150,7 @@ class Board:
                 formula += ("+")
             else:
                 formula += ")" + word_multiplier
+
+            self.board_score.loc = "1"
 
         return formula
